@@ -1,82 +1,106 @@
 package de.leahcimkrob.ethriaracer.listener;
 
 import de.leahcimkrob.ethriaracer.EthriaRacer;
-import net.kyori.adventure.text.minimessage.MiniMessage;
+import dev.lone.itemsadder.api.CustomEntity;
+import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.block.data.type.PressurePlate;
-import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.inventory.EquipmentSlot;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.event.vehicle.VehicleMoveEvent;
+import org.bukkit.inventory.*;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
-import java.io.File;
+import java.util.*;
 
-public class BoostPlateCreateListener implements Listener {
+public class EthriaRacerListener implements Listener {
 
     private final EthriaRacer plugin;
+    private final Map<UUID, Long> cooldowns = new HashMap<>();
 
-    public BoostPlateCreateListener(EthriaRacer plugin) {
+    public EthriaRacerListener(EthriaRacer plugin) {
         this.plugin = plugin;
     }
 
-    /**
-     * Spieler klickt mit Creator-Stick auf eine Druckplatte.
-     * Platte wird gespeichert und darf dabei nicht abgebaut werden,
-     * selbst im Creativ-Modus!
-     */
     @EventHandler
-    public void onPlayerUseCreatorStick(PlayerInteractEvent event) {
-        // Nur Main Hand und Rechtsklick auf Block
-        if (event.getHand() != EquipmentSlot.HAND) return;
-        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
-        ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
-        if (!plugin.isCreatorStick(item)) return;
-        Block block = event.getClickedBlock();
-        if (block == null || !(block.getBlockData() instanceof PressurePlate)) return;
+    public void onVehicleMove(VehicleMoveEvent event) {
+        Entity vehicle = event.getVehicle();
+        // Prüfe, ob das Entity eine CustomEntity ist
+        if (!CustomEntity.isCustomEntity(vehicle)) return;
 
-        // Platte darf beim Festlegen NICHT abgebaut werden!
-        event.setCancelled(true);
+        // Rest deines Codes wie gehabt...
+        Block under = vehicle.getLocation().subtract(0, 1, 0).getBlock();
+        String key = under.getWorld().getName() + ":" + under.getX() + ":" + under.getY() + ":" + under.getZ();
 
-        String tap = block.getType().name();
-        String location = block.getWorld().getName() + "," + block.getX() + "," + block.getY() + "," + block.getZ();
+        FileConfiguration boostConfig = plugin.getBoostConfig();
+        if (!boostConfig.contains("boosts." + key)) return;
 
-        // Defaultwerte (anpassbar)
-        String type = "SPEED";
-        double modifier = 2.0;
-        int duration = 5;
+        UUID id = vehicle.getUniqueId();
+        long now = System.currentTimeMillis();
+        if (cooldowns.containsKey(id) && now - cooldowns.get(id) < 3000) return;
 
-        plugin.addBoostPlate(type, modifier, duration, tap, location);
+        cooldowns.put(id, now);
 
-        event.getPlayer().sendMessage(MiniMessage.miniMessage().deserialize("<green>Boost-Platte an Position gespeichert!</green>"));
+        double multiplier = boostConfig.getDouble("boosts." + key + ".modifier", 2.0);
+        Vector boosted = vehicle.getVelocity().multiply(multiplier);
+        vehicle.setVelocity(boosted);
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                vehicle.setVelocity(vehicle.getVelocity().multiply(0.5));
+            }
+        }.runTaskLater(plugin, 40L);
     }
 
-    /**
-     * Boost-Platten dürfen von niemandem abgebaut werden, wenn sie in boost.yml stehen.
-     */
     @EventHandler
-    public void onBlockBreak(BlockBreakEvent event) {
-        Block block = event.getBlock();
-        if (!(block.getBlockData() instanceof PressurePlate)) return;
-        File file = new File(plugin.getDataFolder(), "boost.yml");
-        if (!file.exists()) return;
-        YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);
-        if (!yaml.contains("boosts")) return;
-        String loc = block.getWorld().getName() + "," + block.getX() + "," + block.getY() + "," + block.getZ();
-        for (Object o : yaml.getList("boosts")) {
-            if (o instanceof java.util.Map<?,?> map) {
-                Object l = map.get("location");
-                if (loc.equals(l)) {
-                    event.setCancelled(true);
-                    Player player = event.getPlayer();
-                    player.sendMessage(MiniMessage.miniMessage().deserialize("<red>Boost-Platten können nicht abgebaut werden!</red>"));
-                    break;
-                }
-            }
+    public void onInteract(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+        if (!player.hasPermission("ethriaracer.admin")) return;
+        openMainGUI(player);
+    }
+
+    public void openMainGUI(Player player) {
+        Inventory gui = Bukkit.createInventory(null, 27, "Boost-Platten Einstellungen");
+
+        ItemStack exit = new ItemStack(Material.IRON_DOOR);
+        ItemMeta meta = exit.getItemMeta();
+        meta.setDisplayName("Verlassen");
+        exit.setItemMeta(meta);
+        gui.setItem(22, exit);
+
+        player.openInventory(gui);
+    }
+
+    @EventHandler
+    public void onGUIClick(InventoryClickEvent event) {
+        if (event.getInventory().getType() != InventoryType.CHEST) return;
+        if (!(event.getWhoClicked() instanceof Player player)) return;
+
+        String title = event.getView().getTitle();
+        if (!title.equals("Boost-Platten Einstellungen")) return;
+
+        event.setCancelled(true);
+
+        ItemStack clicked = event.getCurrentItem();
+        if (clicked == null || clicked.getType() == Material.AIR) return;
+
+        if (clicked.getType() == Material.IRON_DOOR) {
+            player.closeInventory();
+            reloadPlugin();
         }
+    }
+
+    private void reloadPlugin() {
+        Bukkit.getScheduler().runTask(plugin, () -> {
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "ethriaracer:reload");
+        });
     }
 }
