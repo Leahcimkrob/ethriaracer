@@ -1,0 +1,19 @@
+name: EthriaRacer
+version: 1.0.0
+main: de.leahcimkrob.ethriaracer.EthriaRacer
+api-version: 1.20
+author: Leahcimkrob
+description: Fahrzeuge mit Boosts, basierend auf Blöcken mit GUI-Verwaltung
+
+commands:
+  ethriaracer:
+    description: Hauptbefehl für Ethria-Racer
+    usage: /<command> reload
+    aliases: [racer]
+    permission: ethriaracer.admin
+    permission-message: Du hast keine Berechtigung für diesen Befehl.
+
+permissions:
+  ethriaracer.admin:
+    description: Erlaubt Zugriff auf Adminfunktionen
+    default: op
