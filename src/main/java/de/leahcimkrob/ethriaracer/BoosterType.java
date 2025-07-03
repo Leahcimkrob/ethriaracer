@@ -14,4 +14,5 @@ public enum BoosterType {
         BoosterType[] values = values();
         return values[(this.ordinal() - 1 + values.length) % values.length];
     }
+
 }

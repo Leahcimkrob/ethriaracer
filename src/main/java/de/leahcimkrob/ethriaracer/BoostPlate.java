@@ -10,7 +10,7 @@ import java.util.List;
 public class BoostPlate {
     private final int id;
     private BoosterType type;
-    private final double modifier;
+    private double modifier;
     private final int duration;
     private final String tap;
     private final String location;
@@ -44,6 +44,13 @@ public class BoostPlate {
 
     public void setType(BoosterType type) {
         this.type = type;
+    }
+    public void increaseModifier() {
+        this.modifier += 0.1; // oder ein anderes Schrittmaß
+    }
+
+    public void decreaseModifier() {
+        this.modifier -= 0.1; // ggf. mit Minimum absichern
     }
 
     public ItemStack toItemStack() {

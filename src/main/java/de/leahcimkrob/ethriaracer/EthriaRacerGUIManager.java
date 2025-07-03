@@ -66,7 +66,7 @@ public class EthriaRacerGUIManager implements Listener {
 
         // Booster-Type
         ConfigurationSection typeSec = guiSec.getConfigurationSection("booster_type");
-        String typeKey = plate.getType(); // z.B. "SPEED"
+        String typeKey = plate.getType().name(); // Enum → String (z.B. "SPEED")
         String displayName = language.raw("booster.type." + typeKey.toLowerCase()); // Holt aus Sprachdatei
         ItemStack typeItem = buildButton(typeSec, displayName);
         inv.setItem(typeSec.getInt("slot"), typeItem);
