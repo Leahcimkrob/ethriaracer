@@ -24,7 +24,7 @@ public class LanguageManager {
         File langFile = new File(plugin.getDataFolder(), "lang" + File.separator + lang + ".yml");
         if (!langFile.exists()) {
             plugin.getLogger().warning("Language file not found: " + langFile.getName() + ", using fallback en_EN.yml!");
-            langFile = new File(plugin.getDataFolder(), "lang" + File.separator + "en_EN.yml.yml");
+            langFile = new File(plugin.getDataFolder(), "lang" + File.separator + "en_EN.yml");
         }
         YamlConfiguration config = YamlConfiguration.loadConfiguration(langFile);
         loadSection("", config);

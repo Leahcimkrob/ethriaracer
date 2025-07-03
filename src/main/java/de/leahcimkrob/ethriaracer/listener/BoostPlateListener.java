@@ -12,7 +12,7 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.material.PressurePlate;
+import org.bukkit.material.PressureSensor;
 
 import java.io.File;
 
@@ -37,7 +37,7 @@ public class BoostPlateListener implements Listener {
         ItemStack item = event.getPlayer().getInventory().getItemInMainHand();
         if (!plugin.isCreatorStick(item)) return;
         Block block = event.getClickedBlock();
-        if (block == null || !(block.getBlockData() instanceof PressurePlate)) return;
+        if (block == null || !(block.getBlockData() instanceof PressureSensor)) return;
 
         // Platte darf beim Festlegen NICHT abgebaut werden!
         event.setCancelled(true);
@@ -61,7 +61,7 @@ public class BoostPlateListener implements Listener {
     @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         Block block = event.getBlock();
-        if (!(block.getBlockData() instanceof PressurePlate)) return;
+        if (!(block.getBlockData() instanceof PressureSensor)) return;
         File file = new File(plugin.getDataFolder(), "boost.yml");
         if (!file.exists()) return;
         YamlConfiguration yaml = YamlConfiguration.loadConfiguration(file);

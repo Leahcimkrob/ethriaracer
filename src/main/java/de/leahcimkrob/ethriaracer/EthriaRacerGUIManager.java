@@ -1,5 +1,6 @@
 package de.leahcimkrob.ethriaracer;
 
+import de.leahcimkrob.ethriaracer.listener.BoostPlateListener;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
@@ -19,14 +20,14 @@ import java.util.UUID;
 
 public class EthriaRacerGUIManager implements Listener {
     private final EthriaRacer plugin;
-    private final BoostPlateManager plateManager;
+    private final BoostPlateListener.BoostPlateManager plateManager;
     private final LanguageManager language;
 
     // Track which player is editing which plate
     // Key: Player UUID, Value: Plate Key (e.g. "world:x:y:z")
     private final Map<UUID, String> editing = new java.util.HashMap<>();
 
-    public EthriaRacerGUIManager(EthriaRacer plugin, BoostPlateManager plateManager, LanguageManager language) {
+    public EthriaRacerGUIManager(EthriaRacer plugin, BoostPlateListener.BoostPlateManager plateManager, LanguageManager language) {
         this.plugin = plugin;
         this.plateManager = plateManager;
         this.language = language;
