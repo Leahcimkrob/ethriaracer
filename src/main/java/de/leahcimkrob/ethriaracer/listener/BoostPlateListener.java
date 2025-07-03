@@ -68,7 +68,7 @@ public class BoostPlateListener implements Listener {
         if (!yaml.contains("boosts")) return;
         String loc = block.getWorld().getName() + "," + block.getX() + "," + block.getY() + "," + block.getZ();
         for (Object o : yaml.getList("boosts")) {
-            if (o instanceof java.util.Map<?,?> map) {
+            if (o instanceof java.util.Map<?, ?> map) {
                 Object l = map.get("location");
                 if (loc.equals(l)) {
                     event.setCancelled(true);
@@ -77,19 +77,6 @@ public class BoostPlateListener implements Listener {
                     break;
                 }
             }
-        }
-    }
-    // --- BoostPlateManager als innere Klasse hinzugefügt ---
-    public static class BoostPlateManager {
-        private final EthriaRacer plugin;
-
-        public BoostPlateManager(EthriaRacer plugin) {
-            this.plugin = plugin;
-        }
-
-        // Beispielmethoden
-        public void reload() {
-            // TODO: Boost-Platten neu laden
         }
     }
 }

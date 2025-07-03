@@ -15,6 +15,7 @@ import java.util.List;
 
 public class EthriaRacer extends JavaPlugin {
 
+    private BoostPlateManager plateManager;
     private LanguageManager languageManager;
     private EthriaRacerGUIManager guiManager;
 
@@ -25,12 +26,19 @@ public class EthriaRacer extends JavaPlugin {
         saveDefaultConfig();
         reloadAll();
 
+        // BoostPlateManager initialisieren
+        this.plateManager = new BoostPlateManager(this);
+
         this.creatorStickKey = new NamespacedKey(this, "creator_stick");
 
-        guiManager = new EthriaRacerGUIManager(this);
+        // EthriaRacerGUIManager mit allen benötigten Argumenten initialisieren
+        guiManager = new EthriaRacerGUIManager(this, plateManager, languageManager);
+
         getCommand("ethriaracer").setExecutor(new EthriaRacerCommand(this, guiManager, languageManager));
 
+        // Listener registrieren und plateManager übergeben (Beispiel für weitere Listener)
         Bukkit.getPluginManager().registerEvents(new BoostPlateCreateListener(this), this);
+        // Beispiel: Bukkit.getPluginManager().registerEvents(new BoostPlateListener(plateManager), this);
     }
 
     /**
@@ -45,6 +53,10 @@ public class EthriaRacer extends JavaPlugin {
         languageManager = new LanguageManager(this, lang);
 
         // Weitere Manager reload falls nötig
+    }
+
+    public BoostPlateManager getPlateManager() {
+        return plateManager;
     }
 
     public LanguageManager getLanguageManager() {
