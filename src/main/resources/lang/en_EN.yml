@@ -1,0 +1,15 @@
+gui:
+  title:
+    main: "<gold>Boost Plate Settings</gold>"
+    edit: "<gold>Edit Plate</gold>"
+  exit: "<red>Exit</red>"
+  saved: "<green>The settings have been saved.</green>"
+error:
+  only_player: "<red>Only players can use this command.</red>"
+  no_permission: "<red>You do not have permission to do this!</red>"
+command:
+  reload: "<green>The plugin has been reloaded.</green>"
+  usage: "<gray>Usage:</gray> <yellow>/ethriaracer reload</yellow> <gray>or</gray> <yellow>/ethriaracer edit</yellow> <gray>or</gray> <yellow>/ethriaracer create</yellow>"
+  unknown: "<red>Unknown subcommand:</red> <yellow>{0}</yellow>"
+  create:
+    given: "<green>You have received the creator stick! Right-click a pressure plate with it.</green>"

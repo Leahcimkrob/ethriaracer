@@ -2,7 +2,7 @@
 language: de_DE
 
 # Settings
-prefix: "&8[&6EthriaRacer&8]&7 » "
+prefix: "<gray>[<gold>Ethriahoe</gold>]</gray> <gray>»</gray> "
 
 # GUI-Settings
 gui:

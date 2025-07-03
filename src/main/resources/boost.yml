@@ -1,7 +1,13 @@
 boosts:
-  world:0:64:0:
-    type: JUMP
-    modifier: 2.0
-  world:1:64:1:
+  - id: 1
     type: SPEED
+    modifier: 2.0
+    duration: 5   # Dauer in Sekunden
+    tap: STONE_PRESSURE_PLATE
+    location: world,100,65,100
+  - id: 2
+    type: JUMP
     modifier: 1.5
+    duration: 3   # Dauer in Sekunden
+    tap: LIGHT_WEIGHTED_PRESSURE_PLATE
+    location: world,110,65,100

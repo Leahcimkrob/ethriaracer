@@ -3,17 +3,23 @@ package de.leahcimkrob.ethriaracer.command;
 import de.leahcimkrob.ethriaracer.EthriaRacer;
 import de.leahcimkrob.ethriaracer.EthriaRacerGUIManager;
 import de.leahcimkrob.ethriaracer.LanguageManager;
-import org.bukkit.ChatColor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 public class EthriaRacerCommand implements CommandExecutor {
 
     private final EthriaRacer plugin;
     private final EthriaRacerGUIManager guiManager;
     private final LanguageManager language;
+    private final MiniMessage mm = MiniMessage.miniMessage();
 
     public EthriaRacerCommand(EthriaRacer plugin, EthriaRacerGUIManager guiManager, LanguageManager language) {
         this.plugin = plugin;
@@ -21,13 +27,17 @@ public class EthriaRacerCommand implements CommandExecutor {
         this.language = language;
     }
 
-    private String getPrefix() {
-        return ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("prefix", ""));
+    private String getPrefixRaw() {
+        return plugin.getConfig().getString("prefix", "");
+    }
+
+    private Component getPrefix() {
+        return mm.deserialize(getPrefixRaw());
     }
 
     private void send(CommandSender sender, String key, Object... args) {
-        String msg = language.get(key, args);
-        sender.sendMessage(getPrefix() + ChatColor.translateAlternateColorCodes('&', msg));
+        Component out = getPrefix().append(language.mm(key, args));
+        sender.sendMessage(out);
     }
 
     @Override
@@ -38,7 +48,7 @@ public class EthriaRacerCommand implements CommandExecutor {
         }
         switch (args[0].toLowerCase()) {
             case "reload":
-                plugin.reloadPlugin();
+                plugin.reloadAll();
                 send(sender, "command.reload");
                 return true;
             case "edit":
@@ -48,9 +58,28 @@ public class EthriaRacerCommand implements CommandExecutor {
                 }
                 guiManager.openPlatesOverview(player);
                 return true;
+            case "create":
+                if (!(sender instanceof Player player)) {
+                    send(sender, "error.only_player");
+                    return true;
+                }
+                giveCreatorStick(player);
+                send(sender, "command.create.given");
+                return true;
             default:
                 send(sender, "command.unknown", args[0]);
                 return true;
         }
+    }
+
+    private void giveCreatorStick(Player player) {
+        ItemStack stick = new ItemStack(Material.STICK, 1);
+        ItemMeta meta = stick.getItemMeta();
+        meta.displayName(mm.deserialize("<gold>Boost-Platten-Ersteller</gold>"));
+        meta.setUnbreakable(true);
+        stick.setItemMeta(meta);
+        stick.addUnsafeEnchantment(org.bukkit.enchantments.Enchantment.FIRE_ASPECT, 1);
+        plugin.markAsCreatorStick(stick); // Markiert den Stick mit persistentem Tag
+        player.getInventory().addItem(stick);
     }
 }
