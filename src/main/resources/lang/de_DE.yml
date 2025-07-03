@@ -1,0 +1,12 @@
+gui:
+  title:
+    main: "Boost-Platten Einstellungen"
+    edit: "Platte bearbeiten"
+  exit: "Verlassen"
+  saved: "Die Einstellungen wurden gespeichert."
+error:
+  only_player: "Nur Spieler können diesen Befehl nutzen."
+  no_permission: "Dazu hast du keine Berechtigung!"
+command:
+  reload: "Das Plugin wurde neu geladen."
+  unknown: "Unbekannter Unterbefehl: {cmd}"

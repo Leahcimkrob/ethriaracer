@@ -2,6 +2,8 @@ package de.leahcimkrob.ethriaracer.command;
 
 import de.leahcimkrob.ethriaracer.EthriaRacer;
 import de.leahcimkrob.ethriaracer.EthriaRacerGUIManager;
+import de.leahcimkrob.ethriaracer.LanguageManager;
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -11,32 +13,43 @@ public class EthriaRacerCommand implements CommandExecutor {
 
     private final EthriaRacer plugin;
     private final EthriaRacerGUIManager guiManager;
+    private final LanguageManager language;
 
-    public EthriaRacerCommand(EthriaRacer plugin, EthriaRacerGUIManager guiManager) {
+    public EthriaRacerCommand(EthriaRacer plugin, EthriaRacerGUIManager guiManager, LanguageManager language) {
         this.plugin = plugin;
         this.guiManager = guiManager;
+        this.language = language;
+    }
+
+    private String getPrefix() {
+        return ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("prefix", ""));
+    }
+
+    private void send(CommandSender sender, String key, Object... args) {
+        String msg = language.get(key, args);
+        sender.sendMessage(getPrefix() + ChatColor.translateAlternateColorCodes('&', msg));
     }
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 0) {
-            sender.sendMessage("§7Verwende: §e/ethriaracer reload §7oder §e/ethriaracer edit");
+            send(sender, "command.usage");
             return true;
         }
         switch (args[0].toLowerCase()) {
             case "reload":
                 plugin.reloadPlugin();
-                sender.sendMessage("§aEthriaRacer wurde neu geladen.");
+                send(sender, "command.reload");
                 return true;
             case "edit":
                 if (!(sender instanceof Player player)) {
-                    sender.sendMessage("§cNur Spieler können die GUI öffnen.");
+                    send(sender, "error.only_player");
                     return true;
                 }
                 guiManager.openPlatesOverview(player);
                 return true;
             default:
-                sender.sendMessage("§7Unbekannter Unterbefehl: §e" + args[0]);
+                send(sender, "command.unknown", args[0]);
                 return true;
         }
     }
