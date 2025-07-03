@@ -1,4 +1,4 @@
-package dev.ethria.racer;
+package de.leahcimkrob.ethriaracer;
 
 import dev.lone.itemsadder.api.CustomEntity;
 import org.bukkit.*;
@@ -19,12 +19,12 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-public class EthriaListener implements Listener {
+public class EthriaRacerListener implements Listener {
 
     private final EthriaRacer plugin;
     private final Map<UUID, Long> cooldowns = new HashMap<>();
 
-    public EthriaListener(EthriaRacer plugin) {
+    public EthriaRacerListener(EthriaRacer plugin) {
         this.plugin = plugin;
     }
 
