@@ -1,9 +1,11 @@
 package de.leahcimkrob.ethriaracer;
 
 import de.leahcimkrob.ethriaracer.command.EthriaRacerCommand;
-import de.leahcimkrob.ethriaracer.listener.BoostPlateCreateListener;
+import de.leahcimkrob.ethriaracer.listener.EthriaRacerListener;
+import de.leahcimkrob.ethriaracer.listener.BoostPlateListener;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
@@ -37,7 +39,7 @@ public class EthriaRacer extends JavaPlugin {
         getCommand("ethriaracer").setExecutor(new EthriaRacerCommand(this, guiManager, languageManager));
 
         // Listener registrieren und plateManager übergeben (Beispiel für weitere Listener)
-        Bukkit.getPluginManager().registerEvents(new BoostPlateCreateListener(this), this);
+        Bukkit.getPluginManager().registerEvents(new BoostPlateListener(this), this);
         // Beispiel: Bukkit.getPluginManager().registerEvents(new BoostPlateListener(plateManager), this);
     }
 
@@ -132,5 +134,9 @@ public class EthriaRacer extends JavaPlugin {
         } catch (IOException e) {
             getLogger().warning("Failed to save boost.yml: " + e.getMessage());
         }
+    }
+    public FileConfiguration getBoostConfig() {
+        File file = new File(getDataFolder(), "boost.yml");
+        return YamlConfiguration.loadConfiguration(file);
     }
 }

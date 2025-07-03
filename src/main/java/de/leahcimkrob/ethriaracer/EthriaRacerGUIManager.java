@@ -39,7 +39,7 @@ public class EthriaRacerGUIManager implements Listener {
         ConfigurationSection guiSec = config.getConfigurationSection("gui.main");
         int size = 27; // Optional: aus Config machen
 
-        Inventory inv = Bukkit.createInventory(null, size, language.get("gui.title.main"));
+        Inventory inv = Bukkit.createInventory(null, size, language.raw("gui.title.main"));
 
         // Platten anzeigen
         List<String> plateSlots = guiSec.getStringList("plate_slots");
@@ -52,7 +52,7 @@ public class EthriaRacerGUIManager implements Listener {
 
         // Exit-Button
         ConfigurationSection exitSec = guiSec.getConfigurationSection("exit");
-        inv.setItem(exitSec.getInt("slot"), buildButton(exitSec, language.get("gui.exit")));
+        inv.setItem(exitSec.getInt("slot"), buildButton(exitSec, language.raw("gui.exit")));
 
         player.openInventory(inv);
     }
