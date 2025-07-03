@@ -62,11 +62,13 @@ public class EthriaRacerGUIManager implements Listener {
         ConfigurationSection guiSec = config.getConfigurationSection("gui.edit");
         int size = 27;
 
-        Inventory inv = Bukkit.createInventory(null, size, language.get("gui.title.edit"));
+        Inventory inv = Bukkit.createInventory(null, size, language.raw("gui.title.edit"));
 
         // Booster-Type
         ConfigurationSection typeSec = guiSec.getConfigurationSection("booster_type");
-        ItemStack typeItem = buildButton(typeSec, plate.getType().getDisplayName(language));
+        String typeKey = plate.getType(); // z.B. "SPEED"
+        String displayName = language.raw("booster.type." + typeKey.toLowerCase()); // Holt aus Sprachdatei
+        ItemStack typeItem = buildButton(typeSec, displayName);
         inv.setItem(typeSec.getInt("slot"), typeItem);
 
         // Modifier
@@ -76,7 +78,7 @@ public class EthriaRacerGUIManager implements Listener {
 
         // Exit-Button (hier: nicht schließbar, kann weggelassen oder als "Zurück"-Button markiert werden)
         ConfigurationSection exitSec = guiSec.getConfigurationSection("exit");
-        inv.setItem(exitSec.getInt("slot"), buildButton(exitSec, language.get("gui.exit")));
+        inv.setItem(exitSec.getInt("slot"), buildButton(exitSec, language.raw("gui.exit")));
 
         editing.put(player.getUniqueId(), plate.getKey());
         player.openInventory(inv);
@@ -98,7 +100,7 @@ public class EthriaRacerGUIManager implements Listener {
         String title = event.getView().getTitle();
 
         // Haupt-GUI
-        if (title.equals(language.get("gui.title.main"))) {
+        if (title.equals(language.raw("gui.title.main"))) {
             event.setCancelled(true);
             int slot = event.getRawSlot();
 
@@ -109,7 +111,7 @@ public class EthriaRacerGUIManager implements Listener {
 
             if (slot == exitSlot) {
                 player.closeInventory();
-                plugin.reloadPlugin();
+                plugin.reloadAll();
                 return;
             }
 
@@ -124,7 +126,7 @@ public class EthriaRacerGUIManager implements Listener {
                     if (event.getClick() == ClickType.LEFT) {
                         openPlateEdit(player, plate);
                     } else if (event.getClick() == ClickType.RIGHT) {
-                        plateManager.removePlate(plate);
+                        plateManager.removePlateByKey(plate.getKey());
                         openPlatesOverview(player);
                     }
                     return;
@@ -134,7 +136,7 @@ public class EthriaRacerGUIManager implements Listener {
         }
 
         // Bearbeiten-GUI
-        if (title.equals(language.get("gui.title.edit"))) {
+        if (title.equals(language.raw("gui.title.edit"))) {
             event.setCancelled(true);
             UUID uuid = player.getUniqueId();
             if (!editing.containsKey(uuid)) return;

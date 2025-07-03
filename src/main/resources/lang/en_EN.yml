@@ -13,3 +13,7 @@ command:
   unknown: "<red>Unknown subcommand:</red> <yellow>{0}</yellow>"
   create:
     given: "<green>You have received the creator stick! Right-click a pressure plate with it.</green>"
+booster:
+  type:
+    speed: "Speed"
+    jump: "Jump"

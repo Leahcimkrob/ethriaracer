@@ -9,30 +9,45 @@ import java.util.List;
 
 public class BoostPlate {
     private final int id;
-    private final String type;
+    private BoosterType type;
     private final double modifier;
     private final int duration;
     private final String tap;
     private final String location;
+    private final String key;
 
-    public BoostPlate(int id, String type, double modifier, int duration, String tap, String location) {
+    public BoostPlate(int id, BoosterType type, double modifier, int duration, String tap, String location, String key) {
         this.id = id;
         this.type = type;
         this.modifier = modifier;
         this.duration = duration;
         this.tap = tap;
         this.location = location;
+        this.key = key;
     }
 
     public int getId() { return id; }
-    public String getType() { return type; }
+    public BoosterType getType() { return type; }
     public double getModifier() { return modifier; }
     public int getDuration() { return duration; }
     public String getTap() { return tap; }
     public String getLocation() { return location; }
+    public String getKey() { return key; }
+
+    public void nextType() {
+        this.type = this.type.next();
+    }
+
+    public void prevType() {
+        this.type = this.type.prev();
+    }
+
+    public void setType(BoosterType type) {
+        this.type = type;
+    }
 
     public ItemStack toItemStack() {
-        Material mat = Material.valueOf(tap); // tap sollte z.B. "STONE_PRESSURE_PLATE" sein
+        Material mat = Material.valueOf(tap);
         ItemStack item = new ItemStack(mat);
         ItemMeta meta = item.getItemMeta();
         meta.setDisplayName("§eBoostPlate #" + id + " (" + type + ")");

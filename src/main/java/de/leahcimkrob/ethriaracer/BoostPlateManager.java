@@ -49,7 +49,7 @@ public class BoostPlateManager {
                     int duration = ((Number) map.get("duration")).intValue();
                     String tap = (String) map.get("tap");
                     String location = (String) map.get("location");
-                    plates.add(new BoostPlate(id, type, modifier, duration, tap, location));
+                    plates.add(new BoostPlate(id, BoosterType.valueOf(type), modifier, duration, tap, location, String.valueOf(id)));
                 } catch (Exception ignored) {}
             }
         }
@@ -76,4 +76,32 @@ public class BoostPlateManager {
             plugin.getLogger().warning("Failed to save boost.yml: " + e.getMessage());
         }
     }
+
+    // Fügt eine neue BoostPlate hinzu
+    public void addPlate(BoostPlate plate) {
+        plates.add(plate);
+    }
+    // Holt eine BoostPlate anhand ihres Index (z.B. für die GUI)
+    public BoostPlate getPlateByIndex(int index) {
+        if (index < 0 || index >= plates.size()) {
+            return null;
+        }
+        return plates.get(index);
+    }
+
+    // Holt eine BoostPlate anhand ihres Keys (optional, falls benötigt)
+    public BoostPlate getPlateByKey(String key) {
+        for (BoostPlate plate : plates) {
+            if (plate.getKey().equals(key)) {
+                return plate;
+            }
+        }
+        return null;
+    }
+
+    // Beispiel: Entfernt eine BoostPlate anhand ihres Keys
+    public boolean removePlateByKey(String key) {
+        return plates.removeIf(plate -> plate.getKey().equals(key));
+    }
+
 }

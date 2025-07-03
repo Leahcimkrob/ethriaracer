@@ -13,3 +13,7 @@ command:
   unknown: "<red>Unbekannter Unterbefehl:</red> <yellow>{0}</yellow>"
   create:
     given: "<green>Du hast den Ersteller-Stick erhalten! Rechtsklicke mit ihm auf eine Druckplatte.</green>"
+booster:
+  type:
+    speed: "Geschwindigkeit"
+    jump: "Sprungkraft"
