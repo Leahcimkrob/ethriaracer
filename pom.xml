@@ -4,12 +4,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>bloody_mind</groupId>
-    <artifactId>CustomLight</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <artifactId>EthriaRacer</artifactId>
+    <version>1.01 </version>
     <packaging>jar</packaging>
-
-    <name>CustomLight</name>
-    <description>CustomLight/GlowingHalo Plugin with ItemsAdder, Brigadier, and Redischat support</description>
 
     <properties>
         <java.version>21</java.version>

@@ -31,9 +31,10 @@ public class EthriaRacerListener implements Listener {
     @EventHandler
     public void onVehicleMove(VehicleMoveEvent event) {
         Entity vehicle = event.getVehicle();
-        CustomEntity customEntity = CustomEntity.getFromEntity(vehicle);
-        if (customEntity == null) return;
+        // Prüfe, ob das Entity eine CustomEntity ist
+        if (!CustomEntity.isCustomEntity(vehicle)) return;
 
+        // Rest deines Codes wie gehabt...
         Block under = vehicle.getLocation().subtract(0, 1, 0).getBlock();
         String key = under.getWorld().getName() + ":" + under.getX() + ":" + under.getY() + ":" + under.getZ();
 

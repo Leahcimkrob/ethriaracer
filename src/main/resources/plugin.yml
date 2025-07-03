@@ -1,0 +1,15 @@
+name: EthriaRacer
+main: de.leahcimkrob.ethriaracer.EthriaRacer
+version: 1.0
+api-version: 1.20
+author: Leahcimkrob
+description: Rennstrecken-Plugin mit konfigurierbaren Boost-Platten und GUI-Verwaltung.
+commands:
+  ethriaracer:
+    description: Hauptbefehl für EthriaRacer (reload, edit)
+    usage: /ethriaracer <reload|edit>
+    aliases: []
+permissions:
+  ethriaracer.admin:
+    description: Erlaubt Zugang zu den Verwaltungsbefehlen und GUIs von EthriaRacer.
+    default: op
